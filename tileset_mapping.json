@@ -1,0 +1,135 @@
+{
+  "metadata": {
+    "total_rows": 95,
+    "total_columns": 64,
+    "total_tiles": 6080,
+    "tile_size": "32x32 pixels"
+  },
+  "sections": {
+    "terrain": {
+      "description": "Rows 0-4: Basic terrain tiles and variations",
+      "grass": {
+        "base": {
+          "description": "Basic grass tiles and variations",
+          "start_row": 0,
+          "start_col": 0,
+          "tiles": {
+            "basic": "tile_r000_c000.png",
+            "flowers": "tile_r000_c001.png",
+            "tall": "tile_r000_c002.png",
+            "variants": ["tile_r000_c003.png", "tile_r000_c004.png", "tile_r000_c005.png"]
+          }
+        },
+        "transitions": {
+          "description": "Grass transitions to other terrains",
+          "start_row": 0,
+          "start_col": 6,
+          "tiles": {
+            "to_dirt": ["tile_r000_c006.png", "tile_r000_c007.png", "tile_r000_c008.png"],
+            "to_water": ["tile_r000_c009.png", "tile_r000_c010.png", "tile_r000_c011.png"]
+          }
+        }
+      }
+    },
+    "structures": {
+      "description": "Rows 5-14: Buildings, walls, and architectural elements",
+      "walls": {
+        "stone": {
+          "description": "Stone wall variations",
+          "start_row": 5,
+          "start_col": 0,
+          "tiles": {
+            "basic": ["tile_r005_c000.png", "tile_r005_c001.png", "tile_r005_c002.png"],
+            "decorated": ["tile_r005_c003.png", "tile_r005_c004.png", "tile_r005_c005.png"]
+          }
+        }
+      }
+    },
+    "characters": {
+      "description": "Rows 15-34: Character sprites and animations",
+      "humanoid": {
+        "warrior": {
+          "description": "Warrior character animations",
+          "start_row": 15,
+          "start_col": 0,
+          "animations": {
+            "idle": {
+              "down": ["tile_r015_c000.png", "tile_r015_c001.png", "tile_r015_c002.png"],
+              "up": ["tile_r015_c003.png", "tile_r015_c004.png", "tile_r015_c005.png"],
+              "side": ["tile_r015_c006.png", "tile_r015_c007.png", "tile_r015_c008.png"]
+            },
+            "walk": {
+              "down": ["tile_r016_c000.png", "tile_r016_c001.png", "tile_r016_c002.png"],
+              "up": ["tile_r016_c003.png", "tile_r016_c004.png", "tile_r016_c005.png"],
+              "side": ["tile_r016_c006.png", "tile_r016_c007.png", "tile_r016_c008.png"]
+            }
+          }
+        }
+      }
+    },
+    "monsters": {
+      "description": "Rows 35-54: Monster sprites and animations",
+      "slimes": {
+        "description": "Various slime monsters",
+        "start_row": 35,
+        "start_col": 0,
+        "variants": {
+          "green": {
+            "animations": {
+              "idle": ["tile_r035_c000.png", "tile_r035_c001.png", "tile_r035_c002.png"],
+              "move": ["tile_r035_c003.png", "tile_r035_c004.png", "tile_r035_c005.png"]
+            }
+          }
+        }
+      }
+    },
+    "items": {
+      "description": "Rows 55-74: Items, weapons, armor, and collectibles",
+      "weapons": {
+        "swords": {
+          "description": "Various sword types",
+          "start_row": 55,
+          "start_col": 0,
+          "items": {
+            "basic": "tile_r055_c000.png",
+            "iron": "tile_r055_c001.png",
+            "steel": "tile_r055_c002.png",
+            "magic": "tile_r055_c003.png"
+          }
+        }
+      }
+    },
+    "effects": {
+      "description": "Rows 75-84: Magic effects and animations",
+      "magic": {
+        "fire": {
+          "description": "Fire spell effects",
+          "start_row": 75,
+          "start_col": 0,
+          "animations": {
+            "cast": ["tile_r075_c000.png", "tile_r075_c001.png", "tile_r075_c002.png"],
+            "impact": ["tile_r075_c003.png", "tile_r075_c004.png", "tile_r075_c005.png"]
+          }
+        }
+      }
+    },
+    "ui": {
+      "description": "Rows 85-94: User interface elements",
+      "buttons": {
+        "description": "Various button states",
+        "start_row": 85,
+        "start_col": 0,
+        "elements": {
+          "menu": {
+            "states": {
+              "normal": "tile_r085_c000.png",
+              "hover": "tile_r085_c001.png",
+              "pressed": "tile_r085_c002.png"
+            }
+          }
+        }
+      }
+    }
+  },
+  "note": "This is a partial mapping. The full tileset contains 6080 tiles (95 rows × 64 columns). Each section contains many more variations, colors, and animation frames than shown here. The mapping provides the structure and examples for each major category."
+}
