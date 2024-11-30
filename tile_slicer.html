@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tileset Slicer</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background: #f0f0f0;
+            }
+            #controls {
+                margin-bottom: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                margin-left: 10px;
+            }
+            button:hover {
+                background: #45a049;
+            }
+            #downloadAll {
+                background: #2196F3;
+            }
+            #downloadAll:hover {
+                background: #1976D2;
+            }
+            #tileContainer {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 20px;
+            }
+            .tile {
+                border: 1px solid #ccc;
+                background: white;
+            }
+            #fileInput {
+                margin-bottom: 10px;
+            }
+            .instructions {
+                margin-bottom: 20px;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="instructions">
+            <h2>Tileset Slicer</h2>
+            <p>1. Click "Choose File" to select your tileset image (ProjectUtumno_full.png)</p>
+            <p>2. Click "Slice Tileset" to split it into 32x32 tiles</p>
+            <p>3. Click "Download All" to get all tiles in a zip file, or click individual tiles to download them</p>
+        </div>
+        <div id="controls">
+            <input type="file" id="fileInput" accept="image/*">
+            <button onclick="sliceTileset()">Slice Tileset</button>
+            <button id="downloadAll" onclick="downloadAllTiles()" style="display: none;">Download All</button>
+            <span id="status"></span>
+        </div>
+        <div id="tileContainer"></div>
+
+        <script>
+            const TILE_SIZE = 32;
+            let tileData = []; // Store tile data for zip download
+
+            async function downloadAllTiles() {
+                const zip = new JSZip();
+                const status = document.getElementById('status');
+                status.textContent = 'Creating zip file...';
+
+                // Add all tiles to the zip
+                tileData.forEach(({name, data}) => {
+                    zip.file(name, data.split(',')[1], {base64: true});
+                });
+
+                try {
+                    const content = await zip.generateAsync({type: 'blob'});
+                    const zipUrl = URL.createObjectURL(content);
+
+                    // Create and trigger download
+                    const link = document.createElement('a');
+                    link.href = zipUrl;
+                    link.download = 'tileset_tiles.zip';
+                    document
+                        .body
+                        .appendChild(link);
+                    link.click();
+                    document
+                        .body
+                        .removeChild(link);
+
+                    status.textContent = 'Zip file downloaded successfully!';
+                } catch (error) {
+                    status.textContent = 'Error creating zip file: ' + error.message;
+                }
+            }
+
+            function sliceTileset() {
+                const fileInput = document.getElementById('fileInput');
+                if (!fileInput.files || !fileInput.files[0]) {
+                    document
+                        .getElementById('status')
+                        .textContent = 'Please select a file first.';
+                    return;
+                }
+
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const numCols = Math.floor(img.width / TILE_SIZE);
+                    const numRows = Math.floor(img.height / TILE_SIZE);
+
+                    canvas.width = TILE_SIZE;
+                    canvas.height = TILE_SIZE;
+
+                    const container = document.getElementById('tileContainer');
+                    container.innerHTML = '';
+                    tileData = []; // Clear previous tile data
+
+                    for (let row = 0; row < numRows; row++) {
+                        for (let col = 0; col < numCols; col++) {
+                            // Clear canvas for new tile
+                            ctx.clearRect(0, 0, TILE_SIZE, TILE_SIZE);
+
+                            // Draw portion of tileset to canvas
+                            ctx.drawImage(img, col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, 0, 0, TILE_SIZE, TILE_SIZE);
+
+                            // Create new canvas for the tile
+                            const tileCanvas = document.createElement('canvas');
+                            tileCanvas.width = TILE_SIZE;
+                            tileCanvas.height = TILE_SIZE;
+                            tileCanvas.className = 'tile';
+                            const tileCtx = tileCanvas.getContext('2d');
+
+                            // Copy tile to new canvas
+                            tileCtx.drawImage(canvas, 0, 0);
+
+                            const tileDataUrl = tileCanvas.toDataURL();
+                            const fileName = `tile_r${row
+                                .toString()
+                                .padStart(3, '0')}_c${col
+                                .toString()
+                                .padStart(3, '0')}.png`;
+
+                            // Store tile data for zip
+                            tileData.push({name: fileName, data: tileDataUrl});
+
+                            // Add download capability for individual tiles
+                            const wrapper = document.createElement('a');
+                            wrapper.href = tileDataUrl;
+                            wrapper.download = fileName;
+                            wrapper.appendChild(tileCanvas);
+
+                            container.appendChild(wrapper);
+                        }
+                    }
+
+                    document
+                        .getElementById('status')
+                        .textContent = `Sliced ${numRows * numCols} tiles. Click "Download All" for zip file or click individual tiles to download them.`;
+                    document
+                        .getElementById('downloadAll')
+                        .style
+                        .display = 'inline-block';
+                };
+
+                img.onerror = function () {
+                    document
+                        .getElementById('status')
+                        .textContent = 'Error loading tileset image. Please make sure the file is a valid image.';
+                };
+
+                // Create object URL from the selected file
+                const fileUrl = URL.createObjectURL(fileInput.files[0]);
+                img.src = fileUrl;
+            }
+        </script>
+    </body>
+</html>
